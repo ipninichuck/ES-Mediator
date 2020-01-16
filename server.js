@@ -4,7 +4,7 @@ const http = require('http');
 const app = require('./api/app');
 
 //sets the port that the RestAPI will listen on
-const port = 3000;
+const port = 3030;
 
 //creates an http server that utilizes the app.js script
 const server = http.createServer(app);
