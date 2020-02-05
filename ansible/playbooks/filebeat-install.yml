@@ -1,0 +1,14 @@
+#- hosts: all
+#  tags:
+#    - common
+#  become: true
+#  roles:
+
+
+
+- hosts: endpoint
+  tags:
+    - filebeat
+  become: true
+  roles:
+    - role: filebeat

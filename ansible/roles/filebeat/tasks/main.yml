@@ -1,0 +1,59 @@
+---
+
+- name: Install filebeat package
+  apt:
+    name: filebeat
+    state: present
+
+- name: Configure filebeat
+  template:
+    src: filebeat.yml.j2
+    dest: /etc/filebeat/filebeat.yml
+  notify: Restart filebeat
+
+- name: Create the  filebeat keystore
+  shell: filebeat keystore create
+
+- name: Install pip
+  apt:
+    name: python-pip
+    state: present
+
+- name: Pip install pexpect
+  pip:
+    name: pexpect
+
+- name: Add the es_user_name to keystore
+  expect:
+    command: filebeat keystore add es_user
+    responses:
+      Enter value for es_user: "{{ es_user_name }}"
+
+
+- name: Add the es_pwd to keystore
+  expect:
+    command: filebeat keystore add es_pwd
+    responses:
+      Enter value for es_pwd: "{{ es_pwd }}"
+
+
+- name: Add the es_host to keystore
+  expect:
+    command: filebeat keystore add es_host
+    responses:
+      Enter value for es_host: "{{ es_host }}"
+
+
+- name: Add the customer_tag to keystore
+  expect:
+    command: filebeat keystore add customer_tag
+    responses:
+      Enter value for customer_tag: "{{ customer_tag }}"
+  notify: Restart filebeat
+
+- name: Un-comment keystore variables
+  command: sed -i "s/#es/es/g" /etc/filebeat/filebeat.yml
+
+
+#- name: Enable and Start filebeat
+#  shell:

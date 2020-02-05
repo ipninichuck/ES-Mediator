@@ -13,7 +13,7 @@ const client = new elasticsearch.Client({
 //routes are set to point to appropriate handlers
 const aggsTermsRoutes = require('./routes/aggs_terms');
 const aggsHttpRoutes = require('./routes/aggs_http');
-
+const askRoutes = require('./routes/ask');
 
 //handles the logging of errors
 app.use(morgan('dev'));
@@ -42,7 +42,7 @@ app.use((req, res, next) => {
 //designates which routes the app should use
 app.use('/aggs_terms', aggsTermsRoutes);
 app.use('/aggs_http', aggsHttpRoutes);
-
+app.use('/ask', askRoutes);
 
 //error Handling
 app.use((req, res, next) => {

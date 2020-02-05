@@ -1,0 +1,9 @@
+---
+
+ansible_host: "{{ vault_ansible_host }}"
+connection_type: "{{ vault_connection_type }}"
+
+es_host: "{{ vault_es_host }}"
+es_user_name: "{{ vault_es_user_name }}"
+es_pwd: "{{ vault_es_pwd }}"
+customer_tag: "{{ vault_customer_tag }}"
