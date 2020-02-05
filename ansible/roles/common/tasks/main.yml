@@ -1,12 +1,8 @@
----
-
 - name: Download Elastic public signing keystore
   shell: wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | apt-key add -
 
 - name: Add Elastic repository
-- apt_repository:
-    repo: deb https://artifacts.elastic.co/packages/7.x/apt stable main
-    state: present
+  shell: echo deb https://artifacts.elastic.co/packages/7.x/apt stable main
 
 - name: update repositories
   command: apt update

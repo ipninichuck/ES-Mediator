@@ -1,8 +1,9 @@
-#- hosts: all
-#  tags:
-#    - common
-#  become: true
-#  roles:
+- hosts: endpoint
+  tags:
+    - common
+  become: true
+  roles:
+    - role: common
 
 
 
