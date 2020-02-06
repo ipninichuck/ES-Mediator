@@ -1,0 +1,104 @@
+- name: Install pip
+  apt:
+    name: python-pip
+    state: present
+
+- name: Pip install pexpect
+  pip:
+    name: pexpect
+    state: present
+
+- name: Create data directory
+  file:
+    path: /var/lib/{{ "customer_tag" }}-filebeat
+    state: directory
+    mode: '0600'
+
+- name: Create log directory
+  file:
+    path: /var/log/{{ "customer_tag" }}-filebeat
+    state: directory
+    mode: '0600'
+
+
+- name: Copy Filebeat Config Folder
+  command: cp -r /etc/filebeat /etc/{{ "customer_tag" }}-filebeat
+
+- name: Create the  filebeat keystore
+  shell: filebeat --path.config /etc/{{ "customer_tag" }}-filebeat --path.data /var/lib/{{ "customer_tag" }}-filebeat keystore create
+
+- name: Add the es_user_name to keystore
+  expect:
+    command: filebeat --path.config /etc/{{ "customer_tag" }}-filebeat --path.data /var/lib/{{ "customer_tag" }}-filebeat keystore add es_user
+    responses:
+      Enter value for es_user: "{{ es_user_name }}"
+
+
+- name: Add the es_pwd to keystore
+  expect:
+    command: filebeat --path.config /etc/{{ "customer_tag" }}-filebeat --path.data /var/lib/{{ "customer_tag" }}-filebeat keystore add es_pwd
+    responses:
+      Enter value for es_pwd: "{{ es_pwd }}"
+
+
+- name: Add the es_host to keystore
+  expect:
+    command: filebeat --path.config /etc/{{ "customer_tag" }}-filebeat --path.data /var/lib/{{ "customer_tag" }}-filebeat keystore add es_host
+    responses:
+      Enter value for es_host: "{{ es_host }}"
+
+- name: Add the customer_tag to keystore
+  expect:
+    command: filebeat --path.config /etc/{{ "customer_tag" }}-filebeat --path.data /var/lib/{{ "customer_tag" }}-filebeat keystore add customer_tag
+    responses:
+      Enter value for customer_tag: "{{ customer_tag }}"
+
+- name: Set filebeat host setting
+  lineinfile:
+    dest: /etc/{{ "customer_tag" }}-filebeat/filebeat.yml
+    line: 'hosts: ["${es_host}"]'
+    insertafter: '#hosts: ["${es_host}"]'
+
+- name: Set filebeat user setting
+  lineinfile:
+    dest: /etc/{{ "customer_tag" }}-filebeat/filebeat.yml
+    line: 'username: "${es_user}"'
+    insertafter: '#username: "${es_user}"'
+
+- name: Set filebeat password setting
+  lineinfile:
+    dest: /etc/{{ "customer_tag" }}-filebeat/filebeat.yml
+    line: 'password: "${es_pwd}"'
+    insertafter: '#password: "${es_pwd}"'
+
+- name: Set filebeat index setting
+  lineinfile:
+    dest: /etc/{{ "customer_tag" }}-filebeat/filebeat.yml
+    line: 'index: "${customer_tag}_filebeat-%{[agent.version]}-%{+yyyy.MM.dd}"'
+    insertafter: '#index: "${customer_tag}_filebeat-%{[agent.version]}-%{+yyyy.MM.dd}"'
+
+- name: Set filebeat template name setting
+  lineinfile:
+    dest: /etc/{{ "customer_tag" }}-filebeat/filebeat.yml
+    line: 'setup.template.name: "${customer_tag}_filebeat-%{[agent.version]}"'
+    insertafter: '#setup.template.name: "${customer_tag}_filebeat-%{[agent.version]}"'
+
+- name: Set filebeat template pattern setting
+  lineinfile:
+    dest: /etc/{{ "customer_tag" }}-filebeat/filebeat.yml
+    line: 'setup.template.pattern: "${customer_tag}_filebeat-%{[agent.version]}-*"'
+    insertafter: '#setup.template.pattern: "${customer_tag}_filebeat-%{[agent.version]}-*"'
+
+- name: Create new filebeat Service
+  template:
+    src: filebeat.service.j2
+    dest: /lib/systemd/system/{{ "customer_tag" }}-filebeat.service
+
+- name: Configure service customer tags
+  lineinfile:
+    dest: /etc/{{ "customer_tag" }}-filebeat/filebeat.yml
+    line: 'ExecStart=/usr/share/filebeat/bin/filebeat --path.config /etc/{{ "customer_tag" }}-filebeat -c filebeat.yml --path.data /var/lib/{{ "customer_tag" }}-filebeat --path.logs /var/log/{{ "customer_tag" }}-filebeat'
+    insertafter: '[Service]'
+
+- name: Enable and Start Filebeat instance
+  command: service {{ "customer_tag" }}-filebeat enable; service {{ "customer_tag" }}-filebeat start

@@ -1,0 +1,6 @@
+- hosts: endpoint
+  tags:
+    - filebeat-instance
+  become: true
+  roles:
+    - role: filebeat-instance

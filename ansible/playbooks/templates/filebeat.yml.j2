@@ -76,7 +76,8 @@ filebeat.config.modules:
   #reload.period: 10s
 
 #==================== Elasticsearch template setting ==========================
-
+#setup.template.name: "${customer_tag}_filebeat-%{[agent.version]}"
+#setup.template.pattern: "${customer_tag}_filebeat-%{[agent.version]}-*"
 setup.template.settings:
   index.number_of_shards: 1
   #index.codec: best_compression
@@ -148,6 +149,7 @@ setup.kibana:
 output.elasticsearch:
   # Array of hosts to connect to.
   #hosts: ["${es_host}"]
+  #index: "${customer_tag}_filebeat-%{[agent.version]}-%{+yyyy.MM.dd}"
   # Optional protocol and basic auth credentials.
   #protocol: "https"
   #username: "${es_user}"

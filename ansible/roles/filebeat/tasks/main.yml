@@ -11,49 +11,58 @@
     dest: /etc/filebeat/filebeat.yml
   notify: Restart filebeat
 
-- name: Create the  filebeat keystore
-  shell: filebeat keystore create
+## Only employ the following sections if using no customer_tag for instance of filebeat
+#- name: Create the  filebeat keystore
+#  shell: filebeat keystore create
 
-- name: Install pip
-  apt:
-    name: python-pip
-    state: present
+#- name: Install pip
+#  apt:
+#    name: python-pip
+#    state: present
 
-- name: Pip install pexpect
-  pip:
-    name: pexpect
+#- name: Pip install pexpect
+#  pip:
+#    name: pexpect
+#    state: present
 
-- name: Add the es_user_name to keystore
-  expect:
-    command: filebeat keystore add es_user
-    responses:
-      Enter value for es_user: "{{ es_user_name }}"
-
-
-- name: Add the es_pwd to keystore
-  expect:
-    command: filebeat keystore add es_pwd
-    responses:
-      Enter value for es_pwd: "{{ es_pwd }}"
+#- name: Add the es_user_name to keystore
+#  expect:
+#    command: filebeat keystore add es_user
+#    responses:
+#      Enter value for es_user: "{{ es_user_name }}"
 
 
-- name: Add the es_host to keystore
-  expect:
-    command: filebeat keystore add es_host
-    responses:
-      Enter value for es_host: "{{ es_host }}"
+#- name: Add the es_pwd to keystore
+#  expect:
+#    command: filebeat keystore add es_pwd
+#    responses:
+#      Enter value for es_pwd: "{{ es_pwd }}"
 
 
-- name: Add the customer_tag to keystore
-  expect:
-    command: filebeat keystore add customer_tag
-    responses:
-      Enter value for customer_tag: "{{ customer_tag }}"
-  notify: Restart filebeat
+#- name: Add the es_host to keystore
+#  expect:
+#    command: filebeat keystore add es_host
+#    responses:
+#      Enter value for es_host: "{{ es_host }}"
 
-- name: Un-comment keystore variables
-  command: sed -i "s/#es/es/g" /etc/filebeat/filebeat.yml
+#- name: Set filebeat host setting
+#  lineinfile:
+#    dest: /etc/filebeat/filebeat.yml
+#    line: 'hosts: ["${es_host}"]'
+#    insertafter: '#hosts: ["${es_host}"]'
+
+#- name: Set filebeat user setting
+#  lineinfile:
+#    dest: /etc/filebeat/filebeat.yml
+#    line: 'username: "${es_user}"'
+#    insertafter: '#username: "${es_user}"'
+
+#- name: Set filebeat password setting
+#  lineinfile:
+#    dest: /etc/filebeat/filebeat.yml
+#    line: 'password: "${es_pwd}"'
+#    insertafter: '#password: "${es_pwd}"'
 
 
 #- name: Enable and Start filebeat
-#  shell:
+#  command: service filebeat enable; service filebeat start
