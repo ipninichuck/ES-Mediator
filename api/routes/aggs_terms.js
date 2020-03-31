@@ -2,6 +2,9 @@
 const express = require('express');
 const router = express.Router();
 const elasticsearch = require('elasticsearch');
+const bodyParser = require('body-parser');
+//Use json data from request
+router.use(bodyParser.json());
 //const app = require('../app')
 //uses the router method from express to provide a json response to a get request to /products
 const client = new elasticsearch.Client({
@@ -9,14 +12,22 @@ const client = new elasticsearch.Client({
  });
 
 router.get('/', (req, res, next) => {
+
+  //Parse search body
+
+
+       //var type = req.body.type;
+       //var field = req.body.field;
+       //var metric = req.body.metric;
+
   //create aggregation of protocols
     client.search({
-    index: 'packetbeat-7.5.1',
+    index: req.body.index,
     body: {
         "aggs": {
             "protocols": {
                 "terms": {
-                    "field": "network.protocol",
+                    "field": req.body.field,
 
                 }
 
