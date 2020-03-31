@@ -5,7 +5,9 @@ const elasticsearch = require('elasticsearch');
 //const app = require('../app')
 //uses the router method from express to provide a json response to a get request to /products
 const client = new elasticsearch.Client({
-   host: ['localhost:9200']
+   host: ['localhost:9200'],
+
+
  });
 
 router.get('/', (req, res, next) => {

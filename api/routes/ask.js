@@ -5,7 +5,7 @@ const express = require('express');
 const router = express.Router();
 const elasticsearch = require('elasticsearch');
 const bodyParser = require('body-parser');
-const agg = require('./agg_terms');
+
 //Use json data from request
 router.use(bodyParser.json());
 
