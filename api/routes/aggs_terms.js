@@ -2,7 +2,7 @@
 const express = require('express');
 const router = express.Router();
 const bodyParser = require('body-parser');
-var client = require('./connection.js');
+const client = require('./connection.js');
 
 
 //Use json data from request
@@ -26,7 +26,7 @@ router.get('/', (req, res, next) => {
   },
 
         "aggs": {
-            "aggregation": {
+            "name": {
                 "terms": {
                     "field": req.body.field,
                     "size" : req.body.size,
@@ -41,7 +41,7 @@ router.get('/', (req, res, next) => {
     }
 //Set answer variable to the array storing the bucket values
 }).then(results => {
-  let answer = results.aggregations.aggregation;
+  let answer = results.body.aggregations.name;
   res.status(200).json({
     message: answer
   });

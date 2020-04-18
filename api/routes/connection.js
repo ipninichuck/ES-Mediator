@@ -1,11 +1,12 @@
-var elasticsearch = require('elasticsearch');
+const { Client } = require('@elastic/elasticsearch')
 
-var client = new elasticsearch.Client({
-  host: {['localhost:9200']}
+const client = new Client({
+  node: 'localhost:9200',
   auth: {
-    username: 'username',
-    password: 'password'
+  username: 'username',
+  password: 'password'
 }
- });
+
+ })
 
 module.exports = client;
