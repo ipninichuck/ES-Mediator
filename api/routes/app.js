@@ -3,17 +3,13 @@ const express = require('express');
 const app = express();
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
-const elasticsearch = require('elasticsearch');
 
-//create connection to elasticsearch createServer
-const client = new elasticsearch.Client({
-   host: ['localhost:9200']
- });
+
+
 
 //routes are set to point to appropriate handlers
-const aggsTermsRoutes = require('./routes/aggs_terms');
-const aggsHttpRoutes = require('./routes/aggs_http');
-const askRoutes = require('./routes/ask');
+const aggsTermsRoutes = require('./aggs_terms');
+
 
 //handles the logging of errors
 app.use(morgan('dev'));
@@ -41,8 +37,7 @@ app.use((req, res, next) => {
 
 //designates which routes the app should use
 app.use('/aggs_terms', aggsTermsRoutes);
-app.use('/aggs_http', aggsHttpRoutes);
-app.use('/ask', askRoutes);
+
 
 //error Handling
 app.use((req, res, next) => {
